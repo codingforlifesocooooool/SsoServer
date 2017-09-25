@@ -15,7 +15,7 @@ public class TokenUtil {
      * @author hek
      * @date 2017年9月22日下午3:08:12
      */
-    void setToken(String tokenId,TokenInfo tokenInfo){
+    public static void setToken(String tokenId,TokenInfo tokenInfo){
         //存放在redis数据库中，并且数据生命周期60秒
         jedis.set(tokenId.getBytes(), SerializeUtil.ObjTOSerialize(tokenInfo));
         jedis.expire(tokenId.getBytes(), 60);
@@ -29,7 +29,7 @@ public class TokenUtil {
      * @param cilent
      * @return
      */
-    TokenInfo getToken(String tokenId){
+    public static TokenInfo getToken(String tokenId){
         //从redis数据库中取,并删除令牌
     	TokenInfo ti = (TokenInfo) SerializeUtil.unSerialize(jedis.get(tokenId.getBytes()));
         return ti;
@@ -40,7 +40,7 @@ public class TokenUtil {
      * @author hek
      * @date 2017年9月22日下午3:07:42
      */
-    void deleteToke(String tokenId){
+    public static void deleteToke(String tokenId){
     	jedis.del(tokenId.getBytes());
     }
     

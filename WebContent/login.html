@@ -11,6 +11,17 @@
 		<li><span>密码</span> <input type="password" name="pwd"/></li>
 		<li><input type="submit" value="提交"/></li>
 	</ul>
+	<input type="hidden" name="returnUrl"/>
 </form>
+<script type="text/javascript">
+function GetQueryString(name)
+{
+     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+     var r = window.location.search.substr(1).match(reg);
+     if(r!=null)return  unescape(r[2]); return null;
+}
+
+document.getElementsByName("returnUrl").value = GetQueryString("returnUrl");
+</script>
 </body>
 </html>

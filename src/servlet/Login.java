@@ -29,14 +29,18 @@ public class Login extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    String returnUrl = request.getParameter("returnUrl");
+	    String loginUrl = "/SsoServer/login.html";
+	    String indexUrl = "/SsoServer/index.html";
+	    
 	    if(StringUtil.isUnEmpty(returnUrl)){
-	        request.getSession().setAttribute("returnUrl", returnUrl);
+	        loginUrl = indexUrl + "?" +"returnUrl=" + returnUrl;
+	        indexUrl = loginUrl + "?" +"returnUrl=" + returnUrl;
 	    }
 	    //如果session中有该参数，说明用户已经登录
 	    if(request.getSession().getAttribute("username") != null){
-	        response.sendRedirect("/SsoServer/index.html");
+	        response.sendRedirect(loginUrl);
 	    }else{
-	        response.sendRedirect("/SsoServer/login.html");
+	        response.sendRedirect(indexUrl);
 	    }
 	}
 

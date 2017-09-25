@@ -1,11 +1,15 @@
 package servlet;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import Token.TokenInfo;
+import Token.TokenUtil;
 
 /**
  * Servlet implementation class DemoServlet
@@ -26,21 +30,19 @@ public class AuthVerify extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String token = request.getParameter("token");
-		String clientUrl = request.getParameter("clientUrl");
+		String returnUrl = request.getParameter("returnUrl");
 		//做令牌校验
-	    if(token != null){
-	        
-	        
+	    if(token == null){
+	        System.out.println("令牌不存在！");
 	    //没有令牌校验，但是有url，就是应用发来的登录认证    
-	    }else if(clientUrl != null){
-	        
-	    }else{
-	        response.sendRedirect("/SsoServer/Login.html");
+	    }else {
+	        if(returnUrl == null){
+	            System.out.println("客户端地址不存在");
+	        }else{
+	            TokenInfo ti = TokenUtil.getToken(token);
+	            //转换成json处理对象
+	        }
 	    }
-	    
-		System.out.println(request.getParameter("user"));
-		System.out.println(request.getParameter("pwd"));
-		response.sendRedirect("/SsoServer/index.html");
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -3,7 +3,7 @@ package Token;
 
 public class TokenInfo {
     private int userId;
-    private int UserName;
+    private String UserName;
     private String ssoClientId;
     private String globalId;
     
@@ -17,12 +17,12 @@ public class TokenInfo {
         this.userId = userId;
     }
     
-    public int getUserName() {
+    public String getUserName() {
     
         return UserName;
     }
     
-    public void setUserName(int userName) {
+    public void setUserName(String userName) {
     
         UserName = userName;
     }
