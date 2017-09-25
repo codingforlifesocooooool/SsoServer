@@ -1,43 +1,43 @@
 package servlet;
 
 import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import util.StringUtil;
-
 /**
  * Servlet implementation class DemoServlet
  */
-@WebServlet("/login")
-public class Login extends HttpServlet {
+@WebServlet("/auth/login")
+public class AuthLogin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Login() {
+    public AuthLogin() {
         super();
     }
 
 	/**
-	 * 访问登录界面
+	 * 登录账号密码校验
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    String returnUrl = request.getParameter("returnUrl");
-	    if(StringUtil.isUnEmpty(returnUrl)){
-	        request.getSession().setAttribute("returnUrl", returnUrl);
+		Object clientUrl = request.getSession().getAttribute("clientUrl");
+		//做令牌校验
+	        
+	    //有url，就是应用发来的登录认证    
+	    if(clientUrl != null){
+	        
 	    }
-	    //如果session中有该参数，说明用户已经登录
-	    if(request.getSession().getAttribute("username") != null){
+	    if(request.getParameter("user").equals(request.getParameter("pwd"))){
+	        request.getSession().setAttribute("username", request.getParameter("user"));
 	        response.sendRedirect("/SsoServer/index.html");
 	    }else{
-	        response.sendRedirect("/SsoServer/login.html");
-	    }
+            response.sendRedirect("/SsoServer/login.html");
+        }
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
