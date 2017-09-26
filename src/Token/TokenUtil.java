@@ -1,6 +1,11 @@
 package Token;
 
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+
 import redis.clients.jedis.Jedis;
+import util.CookieUtil;
 
 
 public class TokenUtil {
@@ -42,6 +47,29 @@ public class TokenUtil {
      */
     public static void deleteToke(String tokenId){
     	jedis.del(tokenId.getBytes());
+    }
+    public static void create(HttpServletRequest request,String returnUrl){
+      create(request,returnUrl,null);
+    }
+    
+    /**
+     * 生成令牌和令牌对应信息
+     * @author hek
+     * @date 2017年9月26日上午11:58:51
+     * @param request
+     * @param returnUrl
+     * @param username 用户名，如果没有的话就从cookie里获取
+     */
+    public static void create(HttpServletRequest request,String returnUrl,String username){
+        String tokenId = UUID.randomUUID().toString();
+        TokenInfo ti = new TokenInfo();
+        ti.setGlobalId(request.getSession().getId());
+        ti.setSsoClientId(returnUrl);
+        if(username != null)
+            ti.setUserName(username);
+        else
+            ti.setUserName( CookieUtil.getVal(request, "sso"));
+        TokenUtil.setToken(tokenId, ti);
     }
     
 }

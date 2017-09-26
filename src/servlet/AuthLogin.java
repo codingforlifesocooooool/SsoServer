@@ -5,10 +5,12 @@ import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import util.StringUtil;
 import Token.TokenInfo;
 import Token.TokenUtil;
 
@@ -38,16 +40,28 @@ public class AuthLogin extends HttpServlet {
 		String username = request.getParameter("pwd");
 		String password = request.getParameter("user"); 
 	    if(username.equals(password)){
+	        //在cookie中存放标识，用以判断是否已经登录
+	        Cookie cookie = new Cookie("sso", username);
+	        //设置cookie的作用域
+	        cookie.setPath("/SsoServer");
+            response.addCookie(cookie);
+            //cookie.setPath("/");// 同服共享
+            
 	        //生成令牌
-	        String tokenId = UUID.randomUUID().toString();
-	        TokenInfo ti = new TokenInfo();
-	        ti.setGlobalId(request.getSession().getId());
-	        ti.setSsoClientId(returnUrl);
-	        ti.setUserName(username);
-	        TokenUtil.setToken(tokenId, ti);
-	        response.sendRedirect(returnUrl+"?"+"tokenId=" + tokenId);
+	        if(StringUtil.isUnEmpty(returnUrl)){
+	            String tokenId = UUID.randomUUID().toString();
+    	        TokenInfo ti = new TokenInfo();
+    	        ti.setGlobalId(request.getSession().getId());
+    	        ti.setSsoClientId(returnUrl);
+    	        ti.setUserName(username);
+    	        TokenUtil.setToken(tokenId, ti);
+    	        //将令牌发送给客户端
+    	        response.sendRedirect(returnUrl+"?"+"tokenId=" + tokenId);
+	        }else{
+	            response.sendRedirect(indexUrl.toString()); 
+	        }
 	    }else{
-            response.sendRedirect("/SsoServer/login.html");
+            response.sendRedirect(loginUrl.toString());
         }
 	}
 

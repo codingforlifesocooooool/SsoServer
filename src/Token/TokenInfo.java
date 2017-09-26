@@ -1,21 +1,15 @@
 package Token;
 
 
+/**
+ * token对应的资源
+ * @author hk
+ *
+ */
 public class TokenInfo {
-    private int userId;
     private String UserName;
     private String ssoClientId;
     private String globalId;
-    
-    public int getUserId() {
-    
-        return userId;
-    }
-    
-    public void setUserId(int userId) {
-    
-        this.userId = userId;
-    }
     
     public String getUserName() {
     
