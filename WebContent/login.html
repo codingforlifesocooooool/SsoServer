@@ -11,7 +11,7 @@
 			<li><span>密码</span> <input type="password" name="pwd" /></li>
 			<li><input type="submit" value="提交" /></li>
 		</ul>
-		<input type="hidden" name="returnUrl" />
+		<input type="hidden" id="returnUrl" name="returnUrl" />
 	</form>
 	<script type="text/javascript">
 function GetQueryString(name)
@@ -21,7 +21,7 @@ function GetQueryString(name)
      if(r!=null)return  unescape(r[2]); return null;
 }
 
-document.getElementsByName("returnUrl").value = GetQueryString("returnUrl");
+document.getElementById("returnUrl").value = GetQueryString("returnUrl");
 </script>
 </body>
 </html>

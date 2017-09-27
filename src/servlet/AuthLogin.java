@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import constant.Commons;
 import util.StringUtil;
 import Token.TokenInfo;
 import Token.TokenUtil;
@@ -39,6 +40,7 @@ public class AuthLogin extends HttpServlet {
 	    //有url，就是应用发来的登录认证    
 		String username = request.getParameter("pwd");
 		String password = request.getParameter("user"); 
+		 System.out.println("/auth/login = "+request.getSession().getId());
 	    if(username.equals(password)){
 	        //在cookie中存放标识，用以判断是否已经登录
 	        Cookie cookie = new Cookie("sso", username);
@@ -47,7 +49,7 @@ public class AuthLogin extends HttpServlet {
             response.addCookie(cookie);
             //cookie.setPath("/");// 同服共享
             
-	        //生成令牌
+	        //如果是从客户端发送过来的就生成令牌,把令牌返回给客户端
 	        if(StringUtil.isUnEmpty(returnUrl)){
 	            String tokenId = UUID.randomUUID().toString();
     	        TokenInfo ti = new TokenInfo();
@@ -56,7 +58,8 @@ public class AuthLogin extends HttpServlet {
     	        ti.setUserName(username);
     	        TokenUtil.setToken(tokenId, ti);
     	        //将令牌发送给客户端
-    	        response.sendRedirect(returnUrl+"?"+"tokenId=" + tokenId);
+    	        response.sendRedirect(returnUrl+"?"+Commons.token+"=" + tokenId+"&"
+    	                            +Commons.globalSessionId+"="+request.getSession().getId());
 	        }else{
 	            response.sendRedirect(indexUrl.toString()); 
 	        }

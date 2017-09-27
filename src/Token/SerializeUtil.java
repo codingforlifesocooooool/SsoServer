@@ -17,6 +17,7 @@ public class SerializeUtil {
      * @author guangshuai.wang 
      */  
     public static byte[] ObjTOSerialize(Object obj){  
+        if(obj != null){
         ObjectOutputStream oos = null;  
         ByteArrayOutputStream byteOut = null;  
         try{  
@@ -28,6 +29,9 @@ public class SerializeUtil {
         }catch (Exception e) {  
             System.out.println("对象序列化失败");  
         }  
+        }else{
+            System.out.println("序列化对象不存在");  
+        }
         return null;  
     }  
     /** 
@@ -39,14 +43,18 @@ public class SerializeUtil {
      * @author guangshuai.wang 
      */  
     public static Object unSerialize(byte[] bytes){  
-        ByteArrayInputStream in = null;  
-        try{  
-            in = new ByteArrayInputStream(bytes);  
-            ObjectInputStream objIn = new ObjectInputStream(in);  
-            return objIn.readObject();  
-        }catch (Exception e) {  
-           System.out.println("反序列化失败");  
-        }  
+        if(bytes != null){
+            ByteArrayInputStream in = null;  
+            try{  
+                in = new ByteArrayInputStream(bytes);  
+                ObjectInputStream objIn = new ObjectInputStream(in);  
+                return objIn.readObject();  
+            }catch (Exception e) {  
+               System.out.println("反序列化失败");  
+            }  
+        }else{
+            System.out.println("反序列化对象不存在");
+        }
         return null;  
     }  
 } 

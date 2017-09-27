@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import constant.Commons;
+import Session.GlobalSessions;
 import Token.TokenInfo;
 import Token.TokenUtil;
 import util.StringUtil;
@@ -32,6 +34,8 @@ public class Login extends HttpServlet {
 	 * 访问登录界面
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    
+	    System.out.println("LOGINSESSION = "+ request.getSession().getId());
 	    String returnUrl = request.getParameter("returnUrl");
 	    System.out.println("returnUrl = " + returnUrl);
         String loginUrl = "/SsoServer/login.html";
@@ -42,9 +46,9 @@ public class Login extends HttpServlet {
     	    for(Cookie c : cookies){
     	        if(c.getName().equals("sso")){
     	            if(StringUtil.isUnEmpty(returnUrl)){
-    	                String tokenId = UUID.randomUUID().toString();
-    	                TokenUtil.create(request, returnUrl);
-    	                response.sendRedirect(returnUrl+"?"+"tokenId="+tokenId);
+    	                String tokenId =  TokenUtil.create(request, returnUrl);
+    	                response.sendRedirect(returnUrl+"?"+Commons.token+"="+tokenId+"&"
+    	                                    +Commons.globalSessionId+"="+request.getSession().getId());
     	            }else{
     	                response.sendRedirect(indexUrl);
     	            }
@@ -53,16 +57,17 @@ public class Login extends HttpServlet {
     	    }
 	    }
 	    if(StringUtil.isUnEmpty(returnUrl)){
-	        loginUrl = indexUrl + "?" +"returnUrl=" + returnUrl;
-	        indexUrl = loginUrl + "?" +"returnUrl=" + returnUrl;
+	        loginUrl = loginUrl + "?" +"returnUrl=" + returnUrl;
+	        indexUrl = indexUrl + "?" +"returnUrl=" + returnUrl;
 	    }
+	    response.sendRedirect(loginUrl);
 	    
 	    //如果session中有该参数，说明用户已经登录
-	    if(request.getSession().getAttribute("username") != null){
+	   /* if(request.getSession().getAttribute("username") != null){
 	        response.sendRedirect(indexUrl);
 	    }else{
 	        response.sendRedirect(loginUrl);
-	    }
+	    }*/
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

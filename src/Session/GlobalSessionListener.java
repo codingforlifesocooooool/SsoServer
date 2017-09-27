@@ -12,12 +12,14 @@ public class GlobalSessionListener implements HttpSessionListener {
 
 	@Override
 	public void sessionCreated(HttpSessionEvent se) {
+	    System.out.println("create");
 		GlobalSessions.addSession(se.getSession().getId(), se.getSession());
 		
 	}
 
 	@Override
 	public void sessionDestroyed(HttpSessionEvent se) {
+	    System.out.println("destory");
 		GlobalSessions.delSession(se.getSession().getId());
 	}
 

@@ -14,6 +14,11 @@ public class Commons {
     public static final String loginout = "loginout";
     
     /**
+     * 是否是从认证中心穿过来的
+     */
+    public static final String isGobal = "isGobal";
+    
+    /**
      * 局部会话的id
      */
     public static final String loaclSessionId = "loaclSessionId";
@@ -23,10 +28,19 @@ public class Commons {
      */
     public static final String returnUrl = "returnUrl";
     
+    /**
+     * 全局会话的id
+     */
+    public static final String globalSessionId = "globalSessionId";
+    
     
     /**
      * 令牌
      */
     public static final String token = "token";
+    
+    public static final String tokenInfo = "tokenInfo";
+    
+    public static final String username = "username";
 
 }

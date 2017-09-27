@@ -1,12 +1,16 @@
 package Token;
 
+import java.io.Serializable;
+
 
 /**
  * token对应的资源
  * @author hk
  *
  */
-public class TokenInfo {
+public class TokenInfo implements Serializable{
+    private static final long serialVersionUID = 1730135296052999548L;
+    
     private String UserName;
     private String ssoClientId;
     private String globalId;

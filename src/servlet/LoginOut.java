@@ -1,16 +1,21 @@
 package servlet;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import util.CookieUtil;
+import util.HttpUtil;
 import constant.Commons;
 import Session.GlobalSessions;
 
@@ -34,18 +39,33 @@ public class LoginOut extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    
 	    HttpSession session = request.getSession();
+	    System.out.println("loginout-sessionId = "+session.getId());
+	    String unOutlocalSessionId = request.getParameter(Commons.loaclSessionId);
 	    //删除cookie标识
 	    CookieUtil.delCookie(request,response,"sso");
-	    
 	    if(session.getAttribute(Commons.loginout) != null){
-	        Map<String,String> map = (Map<String, String>) session.getAttribute(Commons.loginout);
-	    }else{
-	        
-	    };
+	        //向每个登陆的系统发送登出请求
+	        Map<String,String> loginoutMap  = null;
+	        if(session.getAttribute(Commons.loginout) != null){
+	            loginoutMap = (Map<String,String>) session.getAttribute(Commons.loginout);
+	            if(unOutlocalSessionId != null){
+	                loginoutMap.remove(unOutlocalSessionId);
+	            }
+	            for(String localSessionId : loginoutMap.keySet()){
+	                String loginStr = loginoutMap.get(localSessionId);
+	                String url = loginStr+"/loginOut";
+                    Map<String,String> params = new HashMap<String, String>();
+                    params.put(Commons.isGobal,"Yes");
+                    params.put(Commons.loaclSessionId, localSessionId);
+                    HttpUtil.http(url, params);
+	            }
+	        }
+	    }
 	    
-	    GlobalSessions.delSession(request.getSession().getId());
 	    request.getSession().invalidate();
-		response.sendRedirect("/SsoServer/login");
+	    
+	    if(unOutlocalSessionId == null)
+	        response.sendRedirect("/SsoServer/login");
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

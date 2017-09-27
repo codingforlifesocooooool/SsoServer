@@ -48,8 +48,9 @@ public class TokenUtil {
     public static void deleteToke(String tokenId){
     	jedis.del(tokenId.getBytes());
     }
-    public static void create(HttpServletRequest request,String returnUrl){
-      create(request,returnUrl,null);
+    
+    public static String create(HttpServletRequest request,String returnUrl){
+      return create(request,returnUrl,null);
     }
     
     /**
@@ -60,7 +61,7 @@ public class TokenUtil {
      * @param returnUrl
      * @param username 用户名，如果没有的话就从cookie里获取
      */
-    public static void create(HttpServletRequest request,String returnUrl,String username){
+    public static String create(HttpServletRequest request,String returnUrl,String username){
         String tokenId = UUID.randomUUID().toString();
         TokenInfo ti = new TokenInfo();
         ti.setGlobalId(request.getSession().getId());
@@ -70,6 +71,14 @@ public class TokenUtil {
         else
             ti.setUserName( CookieUtil.getVal(request, "sso"));
         TokenUtil.setToken(tokenId, ti);
+        return tokenId;
+    }
+    
+    public static void main(String[] args) {
+        
+        TokenInfo w = getToken("0af04ba9-6ec3-4efa-9a94-e8955e01f0ad");
+        System.out.println(w.getUserName());
+        
     }
     
 }
