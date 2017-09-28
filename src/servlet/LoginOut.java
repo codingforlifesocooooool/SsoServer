@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 
 import util.CookieUtil;
 import util.HttpUtil;
+import util.StringUtil;
 import constant.Commons;
 import Session.GlobalSessions;
 
@@ -37,20 +38,33 @@ public class LoginOut extends HttpServlet {
 	 * 登出系统
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    
 	    HttpSession session = request.getSession();
+	    //如果从客户端传过来，所以无法通过cookieId来得到对应的session,需要客户端穿GlobalSessionId得到对应的cookie
+	  /*  if(request.getParameter(Commons.globalSessionId) != null){
+	        String globalSessionId = request.getParameter(Commons.globalSessionId);
+	        session = GlobalSessions.getSession(globalSessionId);
+	    }else{
+	        session = request.getSession();
+	    }*/
+	    //session不是原来的，因为从客户端传过来，所以无法通过cookieId来得到对应的session,需要客户端穿GlobalSessionId得到对应的cookie
 	    System.out.println("loginout-sessionId = "+session.getId());
-	    String unOutlocalSessionId = request.getParameter(Commons.loaclSessionId);
-	    //删除cookie标识
-	    CookieUtil.delCookie(request,response,"sso");
+	    String returnUrl = request.getParameter(Commons.returnUrl);
+	    //String unOutlocalSessionId = request.getParameter(Commons.loaclSessionId);
+	    //删除cookie标识,但是如果是从应用端发来的http通信，response可能不是相同的，无法删除cookie，所以应用端应该重定向到这里
+	   // CookieUtil.delCookie(request,response,"sso");
+	    Cookie cookie = new Cookie("sso", null);
+        cookie.setPath("/SsoServer");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+	    
 	    if(session.getAttribute(Commons.loginout) != null){
 	        //向每个登陆的系统发送登出请求
 	        Map<String,String> loginoutMap  = null;
 	        if(session.getAttribute(Commons.loginout) != null){
 	            loginoutMap = (Map<String,String>) session.getAttribute(Commons.loginout);
-	            if(unOutlocalSessionId != null){
+	           /* if(unOutlocalSessionId != null){
 	                loginoutMap.remove(unOutlocalSessionId);
-	            }
+	            }*/
 	            for(String localSessionId : loginoutMap.keySet()){
 	                String loginStr = loginoutMap.get(localSessionId);
 	                String url = loginStr+"/loginOut";
@@ -64,8 +78,10 @@ public class LoginOut extends HttpServlet {
 	    
 	    request.getSession().invalidate();
 	    
-	    if(unOutlocalSessionId == null)
+	    if(StringUtil.isEmpty(returnUrl))
 	        response.sendRedirect("/SsoServer/login");
+	    else
+	        response.sendRedirect(returnUrl);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

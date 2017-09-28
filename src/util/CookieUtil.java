@@ -33,7 +33,7 @@ public class CookieUtil {
      * @param name
      */
     public static void delCookie(HttpServletRequest request,HttpServletResponse response,String name){
-        Cookie[] cookies = request.getCookies();
+      /*  Cookie[] cookies = request.getCookies();
         if(cookies != null){
             for(Cookie c : cookies){
                 if(c.getName().equals(name)){
@@ -44,6 +44,11 @@ public class CookieUtil {
                     return;
                 }
             }
-        }
+        }*/
+        Cookie cookie = new Cookie("sso", null);
+        cookie.setPath("/SsoServer");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        
     }
 }
